@@ -1,0 +1,29 @@
+[project]
+name = "spec-hack"
+version = "0.1.0"
+description = "A security assessment-driven development toolkit for penetration testing and vulnerability assessment"
+requires-python = ">=3.10"
+dependencies = [
+    "typer",
+    "rich",
+    "httpx[socks]",
+    "platformdirs",
+    "readchar",
+    "truststore>=0.10.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/arch3rPro/spec-hack"
+Repository = "https://github.com/arch3rPro/spec-hack"
+Documentation = "https://github.com/arch3rPro/spec-hack"
+
+[project.scripts]
+spechack = "spechack_cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/spechack_cli"]
+

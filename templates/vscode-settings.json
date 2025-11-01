@@ -1,0 +1,14 @@
+{
+    "chat.promptFilesRecommendations": {
+        "spechack.constitution": true,
+        "spechack.spec": true,
+        "spechack.plan": true,
+        "spechack.tasks": true,
+        "spechack.implement": true
+    },
+    "chat.tools.terminal.autoApprove": {
+        ".spechack/scripts/bash/": true,
+        ".spechack/scripts/powershell/": true
+    }
+}
+
