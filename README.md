@@ -1,6 +1,5 @@
 <div align="center">
     <img src="./media/logo.png" alt="Spec Hack Logo" width="128" height="128" />
-
     <h1>🔒 Spec Hack</h1>
     <h3><em>Standardize penetration testing workflows with AI automation.</em></h3>
     

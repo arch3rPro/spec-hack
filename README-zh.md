@@ -1,6 +1,5 @@
 <div align="center">
     <img src="./media/logo.png" alt="Spec Hack Logo" width="128" height="128" />
-    
     <h1>🔒 Spec Hack</h1>
     <h3><em>借助AI自动化规范渗透测试工作流程。</em></h3>
 </div>
