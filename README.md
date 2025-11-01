@@ -3,11 +3,15 @@
 
     <h1>🔒 Spec Hack</h1>
     <h3><em>Standardize penetration testing workflows with AI automation.</em></h3>
+    
 </div>
+
+<img src="./media/spec-hack.png" alt="Spec Hack"/>
 
 <p align="center">
     <strong>An open source framework that enables security professionals to standardize penetration testing processes and leverage AI for automated security assessments, ensuring consistent and thorough testing methodologies.</strong>
 </p>
+
 
 
 <p align="center">
