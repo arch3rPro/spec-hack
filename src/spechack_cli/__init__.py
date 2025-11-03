@@ -559,8 +559,8 @@ def merge_json_files(existing_path: Path, new_content: dict, verbose: bool = Fal
     return merged
 
 def download_template_from_github(ai_assistant: str, download_dir: Path, *, script_type: str = "sh", verbose: bool = True, show_progress: bool = True, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Tuple[Path, dict]:
-    repo_owner = "github"
-    repo_name = "spec-hack"  # Note: Still using spec-hack repo for templates
+    repo_owner = "arch3rPro"
+    repo_name = "spec-hack"  # Note: Using arch3rPro/spec-hack repo for templates
     if client is None:
         client = httpx.Client(verify=ssl_context)
 

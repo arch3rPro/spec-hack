@@ -1,0 +1,100 @@
+name: Create Release
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'memory/**'
+      - 'scripts/**'
+      - 'templates/**'
+      - 'src/spechack_cli/__init__.py'
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+
+      - name: Get next version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION=$(bash .github/workflows/scripts/get-next-version.sh --bump-patch)
+          else
+            VERSION=$(bash .github/workflows/scripts/get-next-version.sh)
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Next version: $VERSION"
+
+      - name: Check if release exists
+        id: check-release
+        run: |
+          bash .github/workflows/scripts/check-release-exists.sh ${{ steps.version.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Create release packages
+        if: steps.check-release.outcome == 'failure' || steps.check-release.outcome == 'success'
+        run: |
+          chmod +x .github/workflows/scripts/create-release-packages.sh
+          bash .github/workflows/scripts/create-release-packages.sh ${{ steps.version.outputs.version }}
+
+      - name: Generate release notes
+        if: steps.check-release.outcome == 'failure' || steps.check-release.outcome == 'success'
+        id: release-notes
+        run: |
+          # Create release notes
+          echo "## Spec-Hack v${{ steps.version.outputs.version }}" > release-notes.md
+          echo "" >> release-notes.md
+          echo "### 🚀 New Features" >> release-notes.md
+          echo "- Updated templates for all supported AI assistants" >> release-notes.md
+          echo "- Enhanced script compatibility for both bash and PowerShell" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "### 📦 Installation" >> release-notes.md
+          echo "Install with:" >> release-notes.md
+          echo "\`\`\`bash" >> release-notes.md
+          echo "uv tool install spechack-cli --from git+https://github.com/arch3rPro/spec-hack.git" >> release-notes.md
+          echo "\`\`\`" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "### 🤖 Supported AI Assistants" >> release-notes.md
+          echo "- GitHub Copilot" >> release-notes.md
+          echo "- Claude Code" >> release-notes.md
+          echo "- Gemini CLI" >> release-notes.md
+          echo "- And 11 more AI assistants!" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "### 📋 Template Variants" >> release-notes.md
+          echo "This release includes template packages for all supported AI assistants and script types." >> release-notes.md
+          echo "Choose the right package for your setup:" >> release-notes.md
+          echo "- \`spechack-template-{assistant}-sh-{version}.zip\` for bash/zsh" >> release-notes.md
+          echo "- \`spechack-template-{assistant}-ps-{version}.zip\` for PowerShell" >> release-notes.md
+          
+          # Set output for use in next step
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          cat release-notes.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        if: steps.check-release.outcome == 'failure' || steps.check-release.outcome == 'success'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Spec-Hack v${{ steps.version.outputs.version }}
+          body: ${{ steps.release-notes.outputs.notes }}
+          files: dist/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
